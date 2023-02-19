@@ -3,6 +3,10 @@ from tkinter import *
 from tkinter import TclError, ttk
 from tkinter.ttk import Combobox
 import copy
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 def get_dis(s,f):
     order_lst=[]
     order_lst1=[]
@@ -63,13 +67,12 @@ def get_res(algo,lst, capacity):
         # occur1=copy.deepcopy(occurance)
         
         for i in range(len(lst)):
-            
+            order_lst=get_dis(lst[i+1:],f)
             if lst[i] not in f:
                 if len(f)<capacity:
                     f.append(lst[i])
-                    order_lst=get_dis(lst[i+1:],f)
                 else:
-                    order_lst=get_dis(lst[i+1:],f)
+                    
 
                     index_of_max=order_lst[-1]
                     print(index_of_max)
@@ -163,8 +166,8 @@ def get_res(algo,lst, capacity):
         return all_f,all_freq,all_pf, fault
     else:
         return None
-import matplotlib.pyplot as plt
-import numpy as np
+    
+# plotting fault rate =================================
 def plot(s):
     s=s.get()
     s=list(map(int,s.split()))
@@ -188,60 +191,64 @@ def create_input_frame(container):
 
     frame = ttk.Frame(container)
     dropdown = [1,2,3,4,5,6,7,8,9,10]
-    # frame.columnconfigure(0, minsize=100, weight=2)
-    # frame.columnconfigure(1, minsize=100, weight=1)
+    
     framevalue = IntVar()
     stringvalue = StringVar()
     algovalue = StringVar()
     algovalue.set("fifo")  # This is done so that all the buttons aren't checked
 
 
-
-    title_label = Label(frame, text="Page Replacement Algorithm", bg="#009999", font="comicsansms 30 bold")
-    title_label.grid(row=0,columnspan=2,sticky='ew')
+    title_label = Label(frame, text="Page Replacement Algorithm", bg="#009999", fg = "#ffffff",
+                        font="comicsansms 30 bold", height = 3, width = 36)
+    title_label.grid(row=0,columnspan=2, sticky="nsew")
     
-    
-    frame_label = Label(frame, text="Frame Size : ", font="comicsansms 20 bold")
-    frame_label.grid(row=1, column=0,padx=50,pady=10,sticky='w')
+    frame_label = Label(frame, text="Frame Size : ", font="comicsansms 20 bold", width=10)
+    frame_label.grid(row=1, column=0,padx=0,pady=10, sticky = "w")
 
-    frameentry = Combobox(frame, textvariable=framevalue, width=20, value=dropdown, font="comicsansms 19 bold", state="readonly")
-    frameentry.grid(row=1, column=1,padx=50,pady=10,sticky='w')
+    frameentry = Combobox(frame, textvariable=framevalue, width=20, value=dropdown, font="comicsansms 20 bold", state="readonly")
+    frameentry.grid(row=1, column=1,padx=0,pady=10,sticky = "w")
 
+    string_label = Label(frame, text="Enter String: ", font="comicsansms 20 bold",width=10)
+    string_label.grid(row=2, column=0, padx=0,pady=10, sticky = "w")
 
-    string_label = Label(frame, text="Enter String(seperated by space): ", font="comicsansms 20 bold")
-    string_label.grid(row=2, column=0, padx=50,pady=10,sticky='w')
-    algo_label = Label(frame, text="Algorithm   : ",font="comicsansms 20 bold")
-    algo_label.grid(row=3, column=0, padx=50,pady=10,sticky='w')
+    algo_label = Label(frame, text="Algorithm   : ",font="comicsansms 20 bold", width=10)
+    algo_label.grid(row=3, column=0, padx=0,pady=10, sticky = "W")
     
     stringentry = Entry(frame, textvariable=stringvalue, width=20, font="comicsansms 20 bold")
-    stringentry.grid(row=2, column=1,padx=50,pady=10,sticky='w')
-    fifoentry = Radiobutton(frame, text="First In First Out", variable=algovalue, value="fifo", font="comicsansms 20 bold")
+    stringentry.grid(row=2, column=1,padx=0,pady=10, sticky = "w")
+
+    fifoentry = Radiobutton(frame, text="First In First Out",
+                            variable=algovalue, value="fifo",
+                            font="comicsansms 20 bold", compound="center")
     optentry = Radiobutton(frame, text="Optimal Page Replacement ", variable=algovalue, value="opt", font="comicsansms 20 bold")
     lruentry = Radiobutton(frame, text="Least Recently Used", variable=algovalue, value="lru", font="comicsansms 20 bold")
-    lfuentry = Radiobutton(frame, text="Least frequently Used", variable=algovalue, value="lfu", font="comicsansms 20 bold")
+    lfuentry = Radiobutton(frame, text="Least Frequently Used", variable=algovalue, value="lfu", font="comicsansms 20 bold")
 
-    fifoentry.grid(row=3, column=1,padx=50,pady=10,sticky='w')
-    optentry.grid(row=4, column=1,padx=50,pady=10,sticky='w')
-    lruentry.grid(row=5, column=1,padx=50,pady=10,sticky='w')
-    lfuentry.grid(row=6, column=1,padx=50,pady=10,sticky='w')
+    fifoentry.grid(row=4, column=0,padx=40,pady=10,sticky = "w")
+    lfuentry.grid(row=5, column=0,padx=40,pady=10,sticky = "w")
+    optentry.grid(row=5, column=1,padx=0,pady=10,sticky = "w")
+    lruentry.grid(row=4, column=1,padx=0,pady=10,sticky = "w")
+    
 
-    cal = Button(frame, text="Submit", bg="#66B2FF", width=20, height=2, command= lambda :openNewWindow(stringvalue,framevalue,algovalue), font="comicsansms")
-    cal.grid(row=7, column=0,padx=100,pady=10)
-    cal1 = Button(frame, text="plot fault rate", bg="#66B2FF", width=20, height=2, command= lambda : plot(stringvalue), font="comicsansms")
-    cal1.grid(row=7, column=1,padx=100,pady=10,sticky='w')
+    cal = Button(frame, text="Submit", bg="#66B2FF", width=10, height=2, command= lambda :openNewWindow(stringvalue,framevalue,algovalue), font="comicsansms")
+    cal.grid(row=6, column=0,padx=0,pady=10, sticky = "ns")
+    cal1 = Button(frame, text="Plot Fault rate", bg="#66B2FF", width=10, height=2, command= lambda : plot(stringvalue), font="comicsansms")
+    cal1.grid(row=6, column=1,padx=0,pady=10, sticky = "ns")
+
     return frame
 temp=0
 def get_queue_name(s):
     if s=="fifo":
-        return "queue:"
+        return "queue"
     if s=="lru":
-        return "Least recently used:"
+        return "Least recently used"
     if s=="opt":
-        return "closest to farthest:"
+        return "closest to farthest"
     if s=="lfu":
-        return "frequency dict:"
+        return "frequency dict"
     else: 
         return None
+    
 def openNewWindow(stringvalue,framevalue,algovalue):
     global temp
     temp=0
@@ -257,7 +264,7 @@ def openNewWindow(stringvalue,framevalue,algovalue):
     newWindow.title("Frames table")
  
     # sets the geometry of toplevel
-    newWindow.geometry('600x400+50+50')
+    newWindow.geometry('750x500')
     for row in range(frames+2):
         newWindow.grid_rowconfigure(row, weight=1)
     for col in range(len(lst)+1):
@@ -265,9 +272,6 @@ def openNewWindow(stringvalue,framevalue,algovalue):
  
     # A Label widget to show in toplevel
         
-    
-
-    
     
     def create_label():
         global temp
@@ -285,34 +289,32 @@ def openNewWindow(stringvalue,framevalue,algovalue):
         label.config(text=",".join(queue_fake))
 
         for index1,j in enumerate(i):
-            ttk.Label(newWindow, text=str(j),font=("Helvetica", word_size), borderwidth=10, relief=SUNKEN).grid(row=index1+1, column=temp+1)
-        ttk.Label(newWindow,text=pf,font=("Helvetica", word_size), borderwidth=10, relief=SUNKEN).grid(row=frames+1, column=temp+1)
+            ttk.Label(newWindow, text=str(j),font=("Helvetica", word_size), borderwidth=2, relief=SUNKEN).grid(row=index1+1, column=temp+1)
+        ttk.Label(newWindow,text=pf,font=("Helvetica", word_size), borderwidth=2, relief=SUNKEN).grid(row=frames+1, column=temp+1)
         temp+=1
 
     lst=list(map(int,lst.split()))
     print(lst)
-    word_size=15
+    word_size=20
 
     for index,i in enumerate(lst):
-
-        ttk.Label(newWindow, text=i,font=("Helvetica", word_size)).grid(column=index+1, row=0)
+        ttk.Label(newWindow, text=i,font=("Helvetica bold", word_size)).grid(column=index+1, row=0)
     for i in range(frames):
-        ttk.Label(newWindow, text=f"f{i}",font=("Helvetica", word_size),borderwidth=1, relief=SUNKEN).grid(row=i+1, column=0)
+        ttk.Label(newWindow, text=f"F{i}",font=("Helvetica bold", word_size), relief=FLAT).grid(row=i+1, column=0)
     all_f,all_queue,all_pf, fault=get_res(algo,lst, frames)
-    ttk.Label(newWindow, text=get_queue_name(algo),font=("Helvetica", word_size), relief=SUNKEN).grid(row=frames+2, column=0, columnspan=10, padx=150,sticky=tk.W)
     label = ttk.Label(newWindow, text="",font=("Helvetica", word_size), relief=SUNKEN)
-    label.grid(row=frames+2, column=1,columnspan=10,padx=100,sticky=tk.E)
+    label.grid(row=frames+2, column=6,columnspan=2, sticky=tk.W)
     
-    
+    ttk.Label(newWindow, text=get_queue_name(algo),font=("Helvetica", word_size), relief=SUNKEN).grid(row=frames+2, column=5, sticky=tk.W)
 
     root.rowconfigure(frames+1, weight=1)
-    ttk.Button(newWindow, text="next step",command= lambda :create_label()).grid(row=frames+2, column=0,columnspan=4, sticky=tk.W,padx=60)
-
+    ttk.Button(newWindow, text="next step",command= lambda :create_label()).grid(row=frames+2, column=0, columnspan=4, sticky=tk.W )
 
 
 root = tk.Tk()
-root.geometry("1000x750")
+root.geometry("750x500")
 root.resizable(0, 0)
+
 try:
     # windows only (remove the minimize/maximize button)
     root.attributes('-toolwindow', True)
