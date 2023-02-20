@@ -72,8 +72,6 @@ def get_res(algo,lst, capacity):
                 if len(f)<capacity:
                     f.append(lst[i])
                 else:
-                    
-
                     index_of_max=order_lst[-1]
                     print(index_of_max)
                     f[index_of_max]=lst[i]
@@ -81,7 +79,6 @@ def get_res(algo,lst, capacity):
                 fault += 1
                 pf = 'Yes'
             else:
-
                 pf = 'No'
             fake=copy.deepcopy(get_dis(lst[i+2:],f))
             all_occur.append(fake)
